@@ -1,0 +1,9 @@
+.signUpContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.textBox {
+  border: 1px solid grey;
+}
