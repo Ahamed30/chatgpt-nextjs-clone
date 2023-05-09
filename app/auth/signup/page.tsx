@@ -8,19 +8,22 @@ import "./style.css";
 const SignUp = () => {
   const router = useRouter();
 
-  const handleSignUp = useCallback(async (event: any) => {
-    event.preventDefault();
-    const { email, password, name } = event.target.elements;
-    try {
-      await createUserWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value
-      ).then(() => router.push("/"));
-    } catch (err) {
-      console.error("Sign Up Failed", err);
-    }
-  }, []);
+  const handleSignUp = useCallback(
+    async (event: any) => {
+      event.preventDefault();
+      const { email, password, name } = event.target.elements;
+      try {
+        await createUserWithEmailAndPassword(
+          auth,
+          email.value,
+          password.value
+        ).then(() => router.push("/"));
+      } catch (err) {
+        console.error("Sign Up Failed", err);
+      }
+    },
+    [router]
+  );
 
   return (
     <>

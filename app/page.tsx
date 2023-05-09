@@ -64,13 +64,13 @@ const Home = () => {
     } catch (err) {
       console.error("Login Failed", err);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!isLoggedIn) {
       router.push("/auth/login");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, router]);
 
   if (!isLoggedIn) return <></>;
 

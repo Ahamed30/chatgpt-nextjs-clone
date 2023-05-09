@@ -14,23 +14,28 @@ const Login = () => {
   const { isLoggedIn } = useContext(AuthContext) as UserProps;
   const router = useRouter();
 
-  const handleLogin = useCallback(async (event: any) => {
-    event.preventDefault();
-    const { email, password } = event.target.elements;
-    try {
-      await signInWithEmailAndPassword(auth, email.value, password.value).then(
-        () => router.push("/")
-      );
-    } catch (err) {
-      console.error("Login Failed", err);
-    }
-  }, []);
+  const handleLogin = useCallback(
+    async (event: any) => {
+      event.preventDefault();
+      const { email, password } = event.target.elements;
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          email.value,
+          password.value
+        ).then(() => router.push("/"));
+      } catch (err) {
+        console.error("Login Failed", err);
+      }
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (isLoggedIn) {
       router.push("/");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, router]);
 
   if (isLoggedIn) return <></>;
 
@@ -97,7 +102,7 @@ const Login = () => {
             </div>
           </form>
           <p className="mt-10 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
+            {`Don't have an account? `}
             <a
               href="signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
