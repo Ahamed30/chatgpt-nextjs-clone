@@ -7,11 +7,11 @@ import { AuthContext } from "@/context/Auth";
 import "./style.css";
 
 interface UserProps {
-  user?: object | null;
+  isLoggedIn: boolean;
 }
 
 const Login = () => {
-  const { user = null } = useContext(AuthContext) as UserProps;
+  const { isLoggedIn } = useContext(AuthContext) as UserProps;
   const router = useRouter();
 
   const handleLogin = useCallback(async (event: any) => {
@@ -27,12 +27,12 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (isLoggedIn) {
       router.push("/");
     }
-  }, [user]);
+  }, [isLoggedIn]);
 
-  if (user) return <></>;
+  if (isLoggedIn) return <></>;
 
   return (
     <>

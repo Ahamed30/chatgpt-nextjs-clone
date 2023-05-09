@@ -15,11 +15,11 @@ interface MessageProps {
 }
 
 interface IUser {
-  user?: object | {};
+  isLoggedIn: boolean;
 }
 
 const Home = () => {
-  const { user } = useContext(AuthContext) as IUser;
+  const { isLoggedIn } = useContext(AuthContext) as IUser;
   const [messages, setMessages, messagesRef] = useState<MessageProps[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -67,12 +67,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!isLoggedIn) {
       router.push("/auth/login");
     }
-  }, [user]);
+  }, [isLoggedIn]);
 
-  if (!user) return <></>;
+  if (!isLoggedIn) return <></>;
 
   return (
     <>
