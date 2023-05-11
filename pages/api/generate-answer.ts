@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Configuration, OpenAIApi } from "openai";
+import { getApiKey } from "@/config/firebase-api-key";
 
 type ResponseData = {
   text: string;
@@ -8,23 +9,25 @@ type ResponseData = {
 interface GenerateNextApiRequest extends NextApiRequest {
   body: {
     prompt: string;
+    userId: string;
   };
 }
-
-const configuration = new Configuration({
-  apiKey: process.env.OPEN_AI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
 export default async function handler(
   req: GenerateNextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const prompt = req.body.prompt;
+  const { prompt, userId } = req?.body;
 
-  if (!prompt || prompt === "") {
+  if (!userId || !prompt || prompt === "") {
     return res.status(204).end();
   }
+
+  const openAIApiKey = await getApiKey(userId);
+  const configuration = new Configuration({
+    apiKey: openAIApiKey,
+  });
+  const openai = new OpenAIApi(configuration);
 
   const aiResult = await openai.createCompletion({
     model: "text-davinci-003",
@@ -36,7 +39,7 @@ export default async function handler(
   });
 
   const response =
-    aiResult.data.choices[0].text?.trim() ||
+    aiResult?.data?.choices[0]?.text?.trim() ||
     "Sorry, unable to process the request!";
 
   res.status(200).json({ text: response });

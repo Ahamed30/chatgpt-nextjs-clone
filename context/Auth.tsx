@@ -1,13 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { auth } from "@/config/firebase";
-
-interface IUser {
-  isLoggedIn: boolean;
-}
+import { IUser } from "@/types/User";
 
 const initialState: IUser = {
-  isLoggedIn: true,
+  isLoggedIn: false,
 };
 
 export const AuthContext = React.createContext<IUser>(initialState);

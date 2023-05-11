@@ -1,51 +1,84 @@
 "use client";
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { AuthContext } from "@/context/Auth";
+import { IUser } from "@/types/User";
+import { EMAIL, PASSWORD } from "@/utils/constants";
 import "./style.css";
 
-interface UserProps {
-  isLoggedIn: boolean;
-}
-
 const Login = () => {
-  const { isLoggedIn } = useContext(AuthContext) as UserProps;
   const router = useRouter();
+  const { isLoggedIn } = useContext(AuthContext) as IUser;
+  const [isCredentialsValid, setIsCredentialsValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const labelClasNames = "block text-sm font-medium leading-6 text-gray-900";
+  const inputClassNames =
+    "textBox w-full rounded-md px-1 py-1.5 text-gray-900 focus:outline-none sm:text-sm";
+  const buttonClassNames =
+    "button-primary h-[40px] flex w-auto m-auto justify-center items-center rounded-md px-10 py-2 text-sm font-semibold leading-6";
+  const linkClassNames =
+    "font-semibold leading-6 text-indigo-600 hover:text-indigo-500";
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password).then(() =>
+        router?.push("/getApiKey")
+      );
+    } catch (err) {
+      setIsCredentialsValid(false);
+      console.error("Login Failed", err);
+    }
+  };
 
   const handleLogin = useCallback(
     async (event: any) => {
       event.preventDefault();
-      const { email, password } = event.target.elements;
-      try {
-        await signInWithEmailAndPassword(
-          auth,
-          email.value,
-          password.value
-        ).then(() => router.push("/"));
-      } catch (err) {
-        console.error("Login Failed", err);
-      }
+      setIsLoading(true);
+      const { email, password } = event?.target?.elements;
+      signIn(email?.value, password?.value);
+      setIsLoading(false);
     },
     [router]
   );
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleChange = (event: any) => {
+    setPassword(event?.target?.value);
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/");
+      const isApiKeyRecieved = localStorage?.getItem("isApiKeyRecieved");
+      if (!isApiKeyRecieved) router?.push("/getApiKey");
+      else router?.push("/");
     }
   }, [isLoggedIn, router]);
 
-  if (isLoggedIn) return <></>;
+  const notValidCredentialsContent = !isCredentialsValid && (
+    <p className="text-center text-red-400">Email and Password is invalid.</p>
+  );
+
+  if (isLoggedIn) {
+    <div>Redirecting...</div>;
+  }
 
   return (
     <>
       <div className="loginContainer px-6 py-12 lg:px-8">
-        <h2 className="text-center text-2xl font-bold leading-9">
+        <h2 className="text-center text-2xl font-bold leading-9 mb-5">
           Sign in to your account
         </h2>
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {notValidCredentialsContent}
+        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
             className="space-y-8"
             action="#"
@@ -53,60 +86,64 @@ const Login = () => {
             onSubmit={handleLogin}
           >
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
+              <label htmlFor={EMAIL} className={labelClasNames}>
                 Email address
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id={EMAIL}
+                  name={EMAIL}
+                  type={EMAIL}
+                  autoComplete={EMAIL}
                   required
-                  className="textBox w-full rounded-md px-1 py-1.5 text-gray-900 focus:outline-none sm:text-sm"
+                  className={inputClassNames}
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label htmlFor={PASSWORD} className={labelClasNames}>
                   Password
                 </label>
+                <button
+                  type="button"
+                  className={labelClasNames}
+                  onClick={toggleShowPassword}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
               </div>
               <div className="mt-2">
                 <input
-                  id="password"
-                  name="password"
-                  type="password"
+                  id={PASSWORD}
+                  name={PASSWORD}
+                  type={showPassword ? "text" : PASSWORD}
+                  value={password}
+                  onChange={handleChange}
                   autoComplete="current-password"
                   required
-                  className="textBox w-full rounded-md px-1 py-1.5 text-gray-900 focus:outline-none sm:text-sm"
+                  className={inputClassNames}
                 />
               </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                className=" button-primary flex w-auto m-auto justify-center rounded-md px-10 py-1.5 text-sm font-semibold leading-6"
-              >
-                Sign in
-              </button>
-            </div>
+            <button type="submit" className={buttonClassNames}>
+              {isLoading ? (
+                <Image
+                  src="/three-dot-loader.gif"
+                  width={35}
+                  height={35}
+                  alt="Loading"
+                />
+              ) : (
+                `Sign in`
+              )}
+            </button>
           </form>
           <p className="mt-10 text-center text-sm text-gray-500">
             {`Don't have an account? `}
-            <a
-              href="signup"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-            >
+            <a href="signup" className={linkClassNames}>
               Register as new user
             </a>
           </p>
