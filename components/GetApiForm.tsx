@@ -73,7 +73,7 @@ const GetApiForm = ({ setShowModal }: FormProps) => {
           </button>
         </div>
         <p className="mt-10 text-center text-sm text-gray-500">
-          Don't have an api key? Please{" "}
+          {`Don't have an api key? Please `}
           <a href={createOneLink} className={linkClassNames}>
             create one
           </a>

@@ -67,7 +67,7 @@ const Home = () => {
     if (!isLoggedIn && !showSignOutModal) {
       router?.push("/auth/login");
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router, showSignOutModal]);
 
   return (
     <>

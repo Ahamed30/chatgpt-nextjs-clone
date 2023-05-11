@@ -20,7 +20,7 @@ const SignOut = ({ setShowSignOutModal }: SignOutProps) => {
     } catch (err) {
       console.error("Login Failed", err);
     }
-  }, []);
+  }, [setShowSignOutModal, user]);
 
   return (
     <div className="fixed top-0 right-0 flex justify-end pt-6 pr-10">

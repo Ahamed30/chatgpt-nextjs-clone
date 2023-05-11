@@ -25,16 +25,19 @@ const Login = () => {
   const linkClassNames =
     "font-semibold leading-6 text-indigo-600 hover:text-indigo-500";
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password).then(() =>
-        router?.push("/getApiKey")
-      );
-    } catch (err) {
-      setIsCredentialsValid(false);
-      console.error("Login Failed", err);
-    }
-  };
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      try {
+        await signInWithEmailAndPassword(auth, email, password).then(() =>
+          router?.push("/getApiKey")
+        );
+      } catch (err) {
+        setIsCredentialsValid(false);
+        console.error("Login Failed", err);
+      }
+    },
+    [router]
+  );
 
   const handleLogin = useCallback(
     async (event: any) => {
@@ -44,7 +47,7 @@ const Login = () => {
       signIn(email?.value, password?.value);
       setIsLoading(false);
     },
-    [router]
+    [signIn]
   );
 
   const toggleShowPassword = () => {

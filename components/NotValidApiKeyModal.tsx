@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/navigation";
 
 interface ModalProps {
   isVisible: boolean;
@@ -8,8 +7,6 @@ interface ModalProps {
 
 const NotValidApiKeyModal = ({ isVisible, setShowModal }: ModalProps) => {
   if (!isVisible) return null;
-
-  const router = useRouter();
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-[2px] flex justify-center items-center">

@@ -22,23 +22,26 @@ const SignUp = () => {
   const linkClassNames =
     "font-semibold leading-6 text-indigo-600 hover:text-indigo-500";
 
-  const signUp = async (email: string, password: string, name: string) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password).then(
-        (userCredential) => {
-          // Store user's name in the Firebase user profile
-          const user = userCredential?.user;
-          updateProfile(user, {
-            displayName: name,
-          });
-          router?.push("/getApiKey");
-        }
-      );
-    } catch (err) {
-      setIsEmailExist(false);
-      console.error("Sign Up Failed", err);
-    }
-  };
+  const signUp = useCallback(
+    async (email: string, password: string, name: string) => {
+      try {
+        await createUserWithEmailAndPassword(auth, email, password).then(
+          (userCredential) => {
+            // Store user's name in the Firebase user profile
+            const user = userCredential?.user;
+            updateProfile(user, {
+              displayName: name,
+            });
+            router?.push("/getApiKey");
+          }
+        );
+      } catch (err) {
+        setIsEmailExist(false);
+        console.error("Sign Up Failed", err);
+      }
+    },
+    [router]
+  );
 
   const handleSignUp = useCallback(
     async (event: any) => {
@@ -48,7 +51,7 @@ const SignUp = () => {
       signUp(email?.value, password?.value, name?.value);
       setIsLoading(false);
     },
-    [router]
+    [signUp]
   );
 
   const toggleShowPassword = () => {
