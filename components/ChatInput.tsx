@@ -32,7 +32,7 @@ const ChatInput = ({ onSend, isSend }: InputProps) => {
     />
   );
 
-  const isNotSendContent = !isSend && (
+  const isLoadingContent = !isSend && (
     <button onClick={(event) => sendInput(event)}>
       <Image
         height={20}
@@ -56,7 +56,7 @@ const ChatInput = ({ onSend, isSend }: InputProps) => {
         onKeyDown={(event) => handleKeyDown(event)}
       ></textarea>
       {isSendContent}
-      {isNotSendContent}
+      {isLoadingContent}
     </div>
   );
 };

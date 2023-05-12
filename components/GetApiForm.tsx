@@ -31,7 +31,7 @@ const GetApiForm = ({ setShowModal }: FormProps) => {
     }
     if (user) {
       await saveApiKey(user?.uid, apiKey);
-      localStorage?.setItem("isApiKeyRecieved", "Yes");
+      localStorage?.setItem("isApiKeyRecieved", "true");
       router?.push("/");
     }
     setIsLoading(false);

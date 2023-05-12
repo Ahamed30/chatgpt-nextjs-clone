@@ -16,6 +16,7 @@ const SignOut = ({ setShowSignOutModal }: SignOutProps) => {
       await signOut(auth).then(() => {
         setShowSignOutModal(true);
         localStorage?.removeItem("isApiKeyRecieved");
+        localStorage?.removeItem("isLoggedIn");
       });
     } catch (err) {
       console.error("Login Failed", err);
@@ -23,7 +24,7 @@ const SignOut = ({ setShowSignOutModal }: SignOutProps) => {
   }, [setShowSignOutModal, user]);
 
   return (
-    <div className="fixed top-0 right-0 flex justify-end pt-6 pr-10">
+    <div className="fixed top-0 right-0 flex justify-end pt-6 pr-10 hover:text-gray-500 hover:underline">
       <button onClick={handleSignOut}>Sign out</button>
     </div>
   );

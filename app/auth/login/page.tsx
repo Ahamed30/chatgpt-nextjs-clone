@@ -1,17 +1,14 @@
 "use client";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/config/firebase";
-import { AuthContext } from "@/context/Auth";
-import { IUser } from "@/types/User";
 import { EMAIL, PASSWORD } from "@/utils/constants";
 import "./style.css";
 
 const Login = () => {
   const router = useRouter();
-  const { isLoggedIn } = useContext(AuthContext) as IUser;
   const [isCredentialsValid, setIsCredentialsValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +28,7 @@ const Login = () => {
         await signInWithEmailAndPassword(auth, email, password).then(() =>
           router?.push("/getApiKey")
         );
+        localStorage?.setItem("isLoggedIn", "true");
       } catch (err) {
         setIsCredentialsValid(false);
         console.error("Login Failed", err);
@@ -59,20 +57,23 @@ const Login = () => {
   };
 
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn) {
       const isApiKeyRecieved = localStorage?.getItem("isApiKeyRecieved");
-      if (!isApiKeyRecieved) router?.push("/getApiKey");
-      else router?.push("/");
+      if (!isApiKeyRecieved) router?.replace("/getApiKey");
+      else router?.replace("/");
     }
-  }, [isLoggedIn, router]);
+  }, [router]);
 
   const notValidCredentialsContent = !isCredentialsValid && (
-    <p className="text-center text-red-400">Email and Password is invalid.</p>
+    <p className="text-center text-red-400">Email or Password is invalid.</p>
   );
 
-  if (isLoggedIn) {
-    <div>Redirecting...</div>;
-  }
+  const buttonContent = isLoading ? (
+    <Image src="/three-dot-loader.gif" width={35} height={35} alt="Loading" />
+  ) : (
+    `Sign in`
+  );
 
   return (
     <>
@@ -132,16 +133,7 @@ const Login = () => {
             </div>
 
             <button type="submit" className={buttonClassNames}>
-              {isLoading ? (
-                <Image
-                  src="/three-dot-loader.gif"
-                  width={35}
-                  height={35}
-                  alt="Loading"
-                />
-              ) : (
-                `Sign in`
-              )}
+              {buttonContent}
             </button>
           </form>
           <p className="mt-10 text-center text-sm text-gray-500">

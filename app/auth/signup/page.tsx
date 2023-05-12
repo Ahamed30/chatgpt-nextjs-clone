@@ -35,6 +35,7 @@ const SignUp = () => {
             router?.push("/getApiKey");
           }
         );
+        localStorage?.setItem("isLoggedIn", "true");
       } catch (err) {
         setIsEmailExist(false);
         console.error("Sign Up Failed", err);
@@ -64,6 +65,12 @@ const SignUp = () => {
 
   const notValidCredentialsContent = !isEmailExist && (
     <p className="text-center text-red-400">Email already exists.</p>
+  );
+
+  const buttonContent = isLoading ? (
+    <Image src="/three-dot-loader.gif" width={35} height={35} alt="Loading" />
+  ) : (
+    `Register`
   );
 
   return (
@@ -138,16 +145,7 @@ const SignUp = () => {
               </div>
             </div>
             <button type="submit" className={buttonClassNames}>
-              {isLoading ? (
-                <Image
-                  src="/three-dot-loader.gif"
-                  width={35}
-                  height={35}
-                  alt="Loading"
-                />
-              ) : (
-                `Register`
-              )}
+              {buttonContent}
             </button>
           </form>
           <p className="mt-10 text-center text-sm text-gray-500">
