@@ -24,7 +24,7 @@ const SignOut = ({ setShowSignOutModal }: SignOutProps) => {
   }, [setShowSignOutModal, user]);
 
   return (
-    <div className="fixed top-0 right-0 flex justify-end pt-6 pr-10 hover:text-gray-500 hover:underline">
+    <div className="flex justify-end py-6 pr-10 hover:text-gray-500 hover:underline fixed top-0 right-0 z-10">
       <button onClick={handleSignOut}>Sign out</button>
     </div>
   );

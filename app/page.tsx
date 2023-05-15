@@ -78,10 +78,10 @@ const Home = () => {
     <>
       <SignOut setShowSignOutModal={setShowSignOutModal} />
       <div className="mainContainer">
-        <div className="sticky top-0 w-full pt-10 px-4 bg-white">
+        <div className="sticky top-5 w-full pt-10 px-4 bg-white">
           <ChatInput onSend={callApi} isSend={loading} />
         </div>
-        <div className="mt-10 px-4">
+        <div className="mt-12 px-4">
           {messages?.map((msg: IMessage) => (
             <ChatMessage key={msg?.key} text={msg?.text} from={msg?.from} />
           ))}
