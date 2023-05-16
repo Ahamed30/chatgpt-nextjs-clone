@@ -9,7 +9,8 @@ import "./style.css";
 
 const SignUp = () => {
   const router = useRouter();
-  const [isEmailExist, setIsEmailExist] = useState(true);
+  const [isEmailExist, setIsEmailExist] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +38,7 @@ const SignUp = () => {
         );
         localStorage?.setItem("isLoggedIn", "true");
       } catch (err) {
-        setIsEmailExist(false);
+        setIsEmailExist(true);
         console.error("Sign Up Failed", err);
       }
     },
@@ -48,7 +49,15 @@ const SignUp = () => {
     async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
+      setIsEmailExist(false);
+      setIsPasswordValid(true);
       const { email, password, name } = event?.target?.elements;
+      if (password?.value?.length < 6) {
+        console.log("heyy");
+        setIsPasswordValid(false);
+        setIsLoading(false);
+        return;
+      }
       signUp(email?.value, password?.value, name?.value);
       setIsLoading(false);
     },
@@ -63,8 +72,14 @@ const SignUp = () => {
     setPassword(event?.target?.value);
   };
 
-  const notValidCredentialsContent = !isEmailExist && (
+  const notValidCredentialsContent = isEmailExist && (
     <p className="text-center text-red-400">Email already exists.</p>
+  );
+
+  const isPssswordNotValidContent = !isPasswordValid && (
+    <p className="text-sm text-red-400 mt-2">
+      Password should have atleast 6 characters.
+    </p>
   );
 
   const buttonContent = isLoading ? (
@@ -142,6 +157,7 @@ const SignUp = () => {
                   required
                   className={inputClassNames}
                 />
+                {isPssswordNotValidContent}
               </div>
             </div>
             <button type="submit" className={buttonClassNames}>
